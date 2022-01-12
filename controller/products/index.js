@@ -1,8 +1,21 @@
 const models = require("../../models");
 const path = require('path');
+const model_categories = require("../../models").categories;
+const model_mst_users = require("../../models").mst_users;
 
 const getAllProducts = async (req, res) => {
-  await models.products.findAll({}).then((data) => {
+  await models.products.findAll({
+    include: [
+      {
+        model: model_categories,
+        as: "v_categories",
+      },
+      {
+        model: model_mst_users,
+        as: "v_mst_users",
+      },
+    ],
+  }).then((data) => {
     res.status(200).send({
       status: 200,
       data: data,
@@ -20,7 +33,7 @@ const createProducts = async (req, res) => {
         return res.status(500).send(err);
       }
     });
-    data.thumbnail = req.protocol + "://" + req.get('host') + '/uploads/'+ file.name;
+    data.image = req.protocol + "://" + req.get('host') + '/uploads/'+ file.name;
     await models.products
     .create(data)
     .then((result) => {

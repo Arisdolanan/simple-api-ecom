@@ -14,7 +14,10 @@ module.exports = {
       products_id: {
         type: Sequelize.INTEGER
       },
-      total: {
+      price: {
+        type: Sequelize.INTEGER
+      },
+      quantity:{
         type: Sequelize.INTEGER
       },
       createdAt: {

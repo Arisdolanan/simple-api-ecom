@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.mst_role, {
+        foreignKey: "role_id",
+        as: "v_role",
+      });
     }
   }
   mst_users.init(
@@ -30,17 +34,6 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "mst_users",
     }
   );
-
-  // foreign key
-  mst_users.associate = function (models) {
-    mst_users.belongsTo(models.mst_role, {
-      foreignKey: "role_id",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
-    });
-  };
-
-  // foreign key
 
   return mst_users;
 };
