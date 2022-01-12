@@ -11,7 +11,7 @@ const getAllMstUsers = async (req, res) => {
       include: [
         {
           model: model_role,
-          as: "mst_role",
+          as: "v_role",
         },
       ],
     })
@@ -30,6 +30,12 @@ const getAllMstUsersId = async (req, res) => {
       attributes: {
         exclude: ["password"],
       },
+      include: [
+        {
+          model: model_role,
+          as: "v_role",
+        },
+      ],
       where: {
         id: req.params.id,
       },
