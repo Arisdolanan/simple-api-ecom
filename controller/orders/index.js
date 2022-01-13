@@ -4,7 +4,19 @@ const model_orders = require("../../models").orders;
 const model_products = require("../../models").products;
 
 const getAllOrdersDetail = async (req, res) => {
-  await models.orders_detail.findAll({
+  const pageAsNumber = Number.parseInt(req.query.page);
+  const sizeAsNumber = Number.parseInt(req.query.size);
+  let page = 0;
+  if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
+    page = pageAsNumber;   
+  }
+  let size = 10;
+  if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
+    size = sizeAsNumber;
+  }
+  await models.orders_detail.findAndCountAll({
+    limit: size,
+    offset: page * size,
     include: [
       {
         model: model_orders,
@@ -24,7 +36,8 @@ const getAllOrdersDetail = async (req, res) => {
   }).then((data) => {
     res.status(200).send({
       status: 200,
-      data: data,
+      data: data.rows,
+      totalPages: Math.ceil(data.count / size),
       message: `Successfully retrieved`,
     });
   });
@@ -50,7 +63,19 @@ const createOrdersDetail = async (req, res) => {
 };
 
 const getAllOrders = async (req, res) => {
-  await models.orders.findAll({
+  const pageAsNumber = Number.parseInt(req.query.page);
+  const sizeAsNumber = Number.parseInt(req.query.size);
+  let page = 0;
+  if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
+    page = pageAsNumber;   
+  }
+  let size = 10;
+  if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
+    size = sizeAsNumber;
+  }
+  await models.orders.findAndCountAll({
+    limit: size,
+    offset: page * size,
     include: [
       {
         model: model_mst_users,
@@ -63,7 +88,8 @@ const getAllOrders = async (req, res) => {
   }).then((data) => {
     res.status(200).send({
       status: 200,
-      data: data,
+      data: data.rows,
+      totalPages: Math.ceil(data.count/size),
       message: `Successfully retrieved`,
     });
   });

@@ -4,7 +4,20 @@ const model_categories = require("../../models").categories;
 const model_mst_users = require("../../models").mst_users;
 
 const getAllProducts = async (req, res) => {
-  await models.products.findAll({
+  const pageAsNumber = Number.parseInt(req.query.page);
+  const sizeAsNumber = Number.parseInt(req.query.size);
+  let page = 0;
+  if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
+    page = pageAsNumber;   
+  }
+  let size = 10;
+  if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 10) {
+    size = sizeAsNumber;
+  }
+
+  await models.products.findAndCountAll({
+    limit: size,
+    offset: page * size,
     include: [
       {
         model: model_categories,
@@ -18,7 +31,8 @@ const getAllProducts = async (req, res) => {
   }).then((data) => {
     res.status(200).send({
       status: 200,
-      data: data,
+      data: data.rows,
+      totalPages: Math.ceil(data.count / size),
       message: `Successfully retrieved`,
     });
   });
